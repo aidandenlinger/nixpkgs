@@ -70,6 +70,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     maintainers = with lib.maintainers; [
       xiaoxiangmoe
       Br1ght0ne
+      aidandenlinger
     ];
     platforms = [ "aarch64-darwin" ];
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
