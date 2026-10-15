@@ -18,6 +18,10 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-wjby7F+Xi+H4avLGZxKJ7/LY2CJAGMIwBM7mfVzI1Bg=";
   };
 
+  patches = [
+    ./01-no-postscript-on-darwin.patch
+  ];
+
   sourceRoot = finalAttrs.src.name + "/wxc";
 
   nativeBuildInputs = [

@@ -1,0 +1,13 @@
+diff --git i/src/cpp/eljprinting.cpp w/src/cpp/eljprinting.cpp
+index 877f0ed..67b9fe3 100644
+--- i/src/cpp/eljprinting.cpp
++++ w/src/cpp/eljprinting.cpp
+@@ -4,7 +4,7 @@
+ # include <wx/dcprint.h>
+ #endif
+ 
+-#if defined(wxUSE_POSTSCRIPT) && (wxUSE_POSTSCRIPT==0)
++#if (defined(wxUSE_POSTSCRIPT) && (wxUSE_POSTSCRIPT==0)) || defined(__WXMAC__)
+ # undef wxUSE_POSTSCRIPT
+ #endif
+ 
