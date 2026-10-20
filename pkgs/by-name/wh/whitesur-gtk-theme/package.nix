@@ -129,6 +129,9 @@ lib.checkListOfEnum "${pname}: window control buttons variants" [ "normal" "alt"
 
       # Provides a dummy home directory
       substituteInPlace libs/lib-core.sh --replace-fail 'MY_HOME=$(getent passwd "''${MY_USERNAME}" | cut -d: -f6)' 'MY_HOME=/tmp'
+    ''
+    + lib.optionalString stdenvNoCC.hostPlatform.isDarwin ''
+      substituteInPlace libs/lib-core.sh --replace-fail 'setterm' 'true'
     '';
 
     dontConfigure = true;
