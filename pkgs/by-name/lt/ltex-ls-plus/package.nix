@@ -37,6 +37,9 @@ maven.buildMavenPackage (finalAttrs: {
   # Allow access to the Kotlin compile daemon
   __darwinAllowLocalNetworking = true;
 
+  # TODO: needs new FOD for completion dictionaries :(
+  # will make autoupdates harder. but doable.
+
   installPhase =
     let
       java_opts = lib.optionalString (
