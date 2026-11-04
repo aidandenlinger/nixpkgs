@@ -35,16 +35,12 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       runHook postInstall
     '';
 
-  meta =
-    let
-      inherit (lib) licenses maintainers;
-    in
-    {
-      homepage = "https://ltex-plus.github.io/ltex-plus/";
-      description = "LSP language server for LanguageTool";
-      license = licenses.mpl20;
-      mainProgram = "ltex-cli-plus";
-      maintainers = [ maintainers.FirelightFlagboy ];
-      platforms = jre_headless.meta.platforms;
-    };
+  meta = {
+    homepage = "https://ltex-plus.github.io/ltex-plus/";
+    description = "LSP language server for LanguageTool";
+    license = lib.licenses.mpl20;
+    mainProgram = "ltex-cli-plus";
+    maintainers = with lib.maintainers; [ FirelightFlagboy ];
+    platforms = jre_headless.meta.platforms;
+  };
 })
