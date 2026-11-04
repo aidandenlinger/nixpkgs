@@ -1,33 +1,58 @@
 {
   lib,
-  stdenvNoCC,
-  fetchurl,
-  makeBinaryWrapper,
+  fetchFromGitHub,
+  python3,
+  cacert,
   jre_headless,
+  makeWrapper,
+  maven,
   jvmOptions ? [ ],
 }:
 
-stdenvNoCC.mkDerivation (finalAttrs: {
+maven.buildMavenPackage (finalAttrs: {
   pname = "ltex-ls-plus";
   version = "18.7.0";
 
-  src = fetchurl {
-    url = "https://github.com/ltex-plus/ltex-ls-plus/releases/download/${finalAttrs.version}/ltex-ls-plus-${finalAttrs.version}.tar.gz";
-    sha256 = "sha256-z15a7ilSVw43QMB4YO8qQ8mS6GkxQkaZhdMrIYh6xlg=";
+  strictDeps = true;
+  __structuredAttrs = true;
+
+  src = fetchFromGitHub {
+    owner = "ltex-plus";
+    repo = "ltex-ls-plus";
+    tag = finalAttrs.version;
+    hash = "sha256-yn3f7VlQksOuQoEp4NfBMjtrFU/6mc+wx7X2G3qXaPQ=";
   };
 
-  nativeBuildInputs = [ makeBinaryWrapper ];
+  mvnHash = "sha256-i2hFBLimW/8gkOWtP6BaxY74p/oOuFdzHysWnLFRkjQ=";
+
+  nativeBuildInputs = [
+    # The maven build runs python/java scripts and they need certs for downloads
+    cacert
+    python3
+    jre_headless
+
+    makeWrapper
+  ];
+
+  # Allow access to the Kotlin compile daemon
+  __darwinAllowLocalNetworking = true;
 
   installPhase =
     let
-      java_opts = lib.optionalString (jvmOptions != [ ]) ''--set JAVA_OPTS "${toString jvmOptions}"'';
+      java_opts = lib.optionalString (
+        jvmOptions != [ ]
+      ) ''--set JAVA_OPTS "${lib.escapeShellArgs jvmOptions}"'';
     in
     ''
       runHook preInstall
 
+      mkdir target/unpacked
+      tar xf target/ltex-ls-plus-${finalAttrs.version}.tar.gz -C target/unpacked --strip-components=1
+
       mkdir -p $out
-      cp -rfv bin/ lib/ $out
+      cp -rfv target/unpacked/{bin,lib} $out
       rm -fv $out/bin/.lsp-cli.json $out/bin/*.bat
+
       for file in $out/bin/{ltex-ls-plus,ltex-cli-plus}; do
         wrapProgram $file --set JAVA_HOME "${jre_headless}" ${java_opts}
       done
